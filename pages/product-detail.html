@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - VCart</title>
+  <meta name="description" content="View product details, specifications, reviews and related products at VCart.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://vcart.com/pages/product-detail.html">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="announcement-bar">
+    <span>&#x26A1; <strong>Free Shipping</strong> on orders above &#x20B9;500</span>
+    <button class="close-announce" aria-label="Close">&times;</button>
+  </div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="hamburger" aria-label="Open menu" role="button" tabindex="0"><span></span><span></span><span></span></div>
+      <a href="/index.html" class="navbar-brand" aria-label="Home"><div class="brand-icon">V</div><span class="brand-highlight">V</span>Cart</a>
+      <div class="navbar-search"><span class="search-icon">&#x1F50D;</span><input type="search" placeholder="Search..." aria-label="Search"></div>
+      <div class="navbar-actions">
+        <button class="theme-toggle" aria-label="Dark mode">&#x263E;</button>
+        <a href="/pages/wishlist.html" class="nav-btn" aria-label="Wishlist">&#x2661;</a>
+        <a href="/pages/cart.html" class="nav-btn" aria-label="Cart">&#x1F6D2;<span class="badge cart-badge" style="display:none;">0</span></a>
+        <a href="/pages/login.html" class="login-btn visible">Sign In</a>
+        <div class="user-profile-btn" role="button" tabindex="0" onclick="window.location.href='/pages/profile.html'"><div class="user-avatar">U</div><span class="user-name">User</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-overlay" aria-hidden="true"></div>
+  <aside class="sidebar" role="dialog" aria-label="Menu">
+    <div class="sidebar-header"><h3>Menu</h3><button class="sidebar-close">&times;</button></div>
+    <nav class="sidebar-nav">
+      <a href="/index.html">&#x1F3E0; Home</a><a href="/pages/products.html">&#x1F4E6; All Products</a>
+      <div class="sidebar-divider"></div>
+      <a href="/pages/cart.html">&#x1F6D2; Cart</a><a href="/pages/wishlist.html">&#x2661; Wishlist</a>
+      <div class="sidebar-divider"></div>
+      <div id="sidebar-auth"></div>
+    </nav>
+  </aside>
+
+  <main class="product-detail">
+    <div class="container" id="product-detail-container">
+      <div class="spinner"></div>
+    </div>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col"><h4>VCart</h4><p>Shop Smart. Shop Better.</p></div>
+        <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="/pages/products.html">All Products</a></li></ul></div>
+        <div class="footer-col"><h4>Customer Service</h4><ul><li><a href="#">Help Center</a></li></ul></div>
+        <div class="footer-col"><h4>My Account</h4><ul><li><a href="/pages/login.html">Sign In</a></li><li><a href="/pages/cart.html">Cart</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><span>&copy; 2026 VCart</span></div>
+    </div>
+  </footer>
+
+  <button class="scroll-top" aria-label="Scroll to top">&#x2B06;</button>
+
+  <script defer src="/js/config.js"></script>
+  <script defer src="/js/utils.js"></script>
+  <script defer src="/js/products.js"></script>
+  <script defer src="/js/cart.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/main.js"></script>
+</body>
+</html>

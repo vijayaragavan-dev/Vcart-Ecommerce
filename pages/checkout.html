@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - VCart</title>
+  <meta name="description" content="Complete your order at VCart.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="announcement-bar">
+    <span>&#x26A1; Free Shipping on orders above &#x20B9;500</span>
+    <button class="close-announce" aria-label="Close">&times;</button>
+  </div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <a href="/index.html" class="navbar-brand" aria-label="Home"><div class="brand-icon">V</div><span class="brand-highlight">V</span>Cart</a>
+      <div class="navbar-actions">
+        <button class="theme-toggle" aria-label="Dark mode">&#x263E;</button>
+        <a href="/pages/cart.html" class="nav-btn" aria-label="Cart">&#x1F6D2;<span class="badge cart-badge" style="display:none;">0</span></a>
+        <a href="/pages/login.html" class="login-btn visible">Sign In</a>
+        <div class="user-profile-btn" role="button" tabindex="0" onclick="window.location.href='/pages/profile.html'"><div class="user-avatar">U</div><span class="user-name">User</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="checkout-page">
+    <div class="container">
+      <div class="section-header"><div class="left"><h2>Checkout</h2></div></div>
+      <div class="checkout-layout">
+        <div>
+          <form class="checkout-form" id="checkout-form">
+            <h2>Shipping Information</h2>
+            <div class="form-group"><label for="full-name">Full Name</label><input type="text" id="full-name" placeholder="John Doe" required></div>
+            <div class="form-group"><label for="email">Email</label><input type="email" id="email" placeholder="john@example.com" required></div>
+            <div class="form-group"><label for="phone">Phone</label><input type="tel" id="phone" placeholder="+91 9876543210" required></div>
+            <div class="form-group"><label for="address">Address</label><input type="text" id="address" placeholder="Street, Building" required></div>
+            <div class="form-row">
+              <div class="form-group"><label for="city">City</label><input type="text" id="city" placeholder="Mumbai" required></div>
+              <div class="form-group"><label for="pincode">Pincode</label><input type="text" id="pincode" placeholder="400001" required></div>
+            </div>
+            <h2 style="margin-top:24px;">Payment Method</h2>
+            <div class="form-group">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);"><input type="radio" name="payment" value="cod" checked> Cash on Delivery</label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);margin-top:8px;"><input type="radio" name="payment" value="card"> Credit / Debit Card</label>
+            </div>
+          </form>
+        </div>
+        <aside class="checkout-review" aria-label="Order review">
+          <h3>Order Review</h3>
+          <div id="checkout-items"></div>
+          <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px;">
+            <div class="summary-row"><span>Subtotal</span><span id="checkout-subtotal">&#x20B9;0</span></div>
+            <div class="summary-row"><span>Shipping</span><span id="checkout-shipping">&#x20B9;0</span></div>
+            <div class="summary-row total"><span>Total</span><span id="checkout-total">&#x20B9;0</span></div>
+          </div>
+          <button class="btn btn-primary btn-block checkout-btn" id="place-order" style="margin-top:16px;">Place Order</button>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <button class="scroll-top" aria-label="Scroll to top">&#x2B06;</button>
+
+  <script defer src="/js/config.js"></script>
+  <script defer src="/js/utils.js"></script>
+  <script defer src="/js/products.js"></script>
+  <script defer src="/js/cart.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/main.js"></script>
+</body>
+</html>

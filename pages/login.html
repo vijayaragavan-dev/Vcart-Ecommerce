@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - VCart</title>
+  <meta name="description" content="Sign in to your VCart account.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="announcement-bar">
+    <span>&#x26A1; Free Shipping on orders above &#x20B9;500</span>
+    <button class="close-announce" aria-label="Close">&times;</button>
+  </div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <a href="/index.html" class="navbar-brand" aria-label="Home"><div class="brand-icon">V</div><span class="brand-highlight">V</span>Cart</a>
+      <div class="navbar-actions">
+        <button class="theme-toggle" aria-label="Dark mode">&#x263E;</button>
+        <a href="/pages/cart.html" class="nav-btn" aria-label="Cart">&#x1F6D2;<span class="badge cart-badge" style="display:none;">0</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo"><span>V</span>Cart</div>
+        <p>Welcome back! Sign in to your account</p>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Username</label>
+          <div class="input-wrapper"><span class="input-icon">&#x1F464;</span><input type="text" id="login-username" placeholder="Enter username" required autocomplete="username"></div>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="input-wrapper"><span class="input-icon">&#x1F512;</span><input type="password" id="login-password" placeholder="Enter password" required autocomplete="current-password"></div>
+        </div>
+        <div class="form-options">
+          <label><input type="checkbox" checked> Remember me</label>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Sign In</button>
+      </form>
+      <div class="auth-divider"><span>or</span></div>
+      <button class="btn btn-secondary btn-block" onclick="window.location.href='/index.html'">Continue as Guest</button>
+      <div class="auth-footer">Don't have an account? <a href="/pages/signup.html">Sign Up</a></div>
+    </div>
+  </main>
+
+  <script defer src="/js/config.js"></script>
+  <script defer src="/js/utils.js"></script>
+  <script defer src="/js/products.js"></script>
+  <script defer src="/js/cart.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/main.js"></script>
+</body>
+</html>

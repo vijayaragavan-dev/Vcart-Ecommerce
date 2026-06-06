@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VCart - Shop Smart. Shop Better. | Premium Online Shopping India</title>
+  <meta name="description" content="India's best online shopping destination. Shop electronics, fashion, sports, home goods &amp; more at unbeatable prices. Fast delivery, easy returns.">
+  <meta name="keywords" content="online shopping, ecommerce India, electronics, fashion, best deals, VCart">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://vcart.com/">
+  <meta property="og:title" content="VCart - Shop Smart. Shop Better.">
+  <meta property="og:description" content="India's best online shopping destination. Shop premium products at unbeatable prices.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vcart.com/">
+  <meta property="og:image" content="https://picsum.photos/seed/og/1200/630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VCart - Shop Smart. Shop Better.">
+  <meta name="twitter:description" content="India's best online shopping destination.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <script defer src="/js/config.js"></script>
+  <script defer src="/js/utils.js"></script>
+  <script defer src="/js/products.js"></script>
+  <script defer src="/js/cart.js"></script>
+  <script defer src="/js/auth.js"></script>
+  <script defer src="/js/main.js"></script>
+</head>
+<body>
+  <a href="#main-content" class="sr-only">Skip to main content</a>
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <span>&#x26A1; <strong>Free Shipping</strong> on orders above &#x20B9;500 &nbsp;|&nbsp; &#x1F389; <strong>Big Summer Sale</strong> - Up to <strong>70% OFF</strong></span>
+    <button class="close-announce" aria-label="Close announcement">&times;</button>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="hamburger" aria-label="Open menu" role="button" tabindex="0">
+        <span></span><span></span><span></span>
+      </div>
+      <a href="/index.html" class="navbar-brand" aria-label="VCart Home">
+        <div class="brand-icon">V</div>
+        <span class="brand-highlight">V</span>Cart
+      </a>
+      <div class="navbar-search">
+        <span class="search-icon" aria-hidden="true">&#x1F50D;</span>
+        <input type="search" placeholder="Search products..." aria-label="Search products" autocomplete="off">
+        <div class="search-suggestions"></div>
+      </div>
+      <div class="navbar-actions">
+        <button class="theme-toggle" aria-label="Toggle dark mode">&#x263E;</button>
+        <button class="nav-btn search-toggle-btn mobile-only" aria-label="Search">&#x1F50D;</button>
+        <a href="/pages/wishlist.html" class="nav-btn" aria-label="Wishlist">&#x2661;</a>
+        <a href="/pages/cart.html" class="nav-btn" aria-label="Cart">&#x1F6D2;<span class="badge cart-badge" style="display:none;">0</span></a>
+        <a href="/pages/login.html" class="login-btn visible">Sign In</a>
+        <div class="user-profile-btn" role="button" tabindex="0" onclick="window.location.href='/pages/profile.html'">
+          <div class="user-avatar">U</div>
+          <span class="user-name">User</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Category Nav -->
+  <nav class="category-nav" aria-label="Categories" id="category-nav">
+    <div class="category-list" id="category-list"></div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar-overlay" aria-hidden="true"></div>
+  <aside class="sidebar" role="dialog" aria-label="Navigation menu">
+    <div class="sidebar-header">
+      <h3>Menu</h3>
+      <button class="sidebar-close" aria-label="Close">&times;</button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/index.html">&#x1F3E0; Home</a>
+      <a href="/pages/products.html">&#x1F4E6; All Products</a>
+      <div class="sidebar-divider"></div>
+      <a href="/pages/cart.html">&#x1F6D2; Cart</a>
+      <a href="/pages/wishlist.html">&#x2661; Wishlist</a>
+      <div class="sidebar-divider"></div>
+      <div id="sidebar-auth"></div>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section class="hero-wrap" aria-label="Featured promotions">
+      <div class="hero" role="region" aria-roledescription="carousel" aria-label="Featured products">
+        <div class="hero-slide active" style="background-image:url('https://picsum.photos/seed/hs1/1280/500');">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-tag orange">&#x26A1; Flash Sale</span>
+            <h1>Premium Wireless Audio</h1>
+            <p>Discover crystal-clear sound with top brands. Up to 60% off on headphones, earbuds &amp; speakers.</p>
+            <div class="hero-actions">
+              <a href="/pages/products.html" class="btn btn-primary btn-lg">Shop Now</a>
+              <a href="/pages/products.html" class="btn btn-secondary btn-lg">View Deals</a>
+            </div>
+          </div>
+        </div>
+        <div class="hero-slide" style="background-image:url('https://picsum.photos/seed/hs2/1280/500');">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-tag blue">&#x1F4AB; New Arrivals</span>
+            <h1>Fashion That Speaks</h1>
+            <p>Elevate your style with the latest fashion collection. Trendy designs, premium fabrics, unbeatable prices.</p>
+            <div class="hero-actions">
+              <a href="/pages/products.html" class="btn btn-primary btn-lg">Explore Fashion</a>
+              <a href="/pages/products.html" class="btn btn-secondary btn-lg">Best Sellers</a>
+            </div>
+          </div>
+        </div>
+        <div class="hero-slide" style="background-image:url('https://picsum.photos/seed/hs3/1280/500');">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-tag green">&#x1F4F1; Smart Tech</span>
+            <h1>Next-Gen Smart Devices</h1>
+            <p>Stay connected with cutting-edge smartwatches, fitness trackers, and accessories at amazing prices.</p>
+            <div class="hero-actions">
+              <a href="/pages/products.html" class="btn btn-primary btn-lg">Shop Tech</a>
+              <a href="/pages/products.html" class="btn btn-secondary btn-lg">Learn More</a>
+            </div>
+          </div>
+        </div>
+        <button class="hero-btn-prev" aria-label="Previous slide">&#x276E;</button>
+        <button class="hero-btn-next" aria-label="Next slide">&#x276F;</button>
+        <div class="hero-dots" role="tablist">
+          <button class="hero-dot active" role="tab" aria-selected="true"></button>
+          <button class="hero-dot" role="tab" aria-selected="false"></button>
+          <button class="hero-dot" role="tab" aria-selected="false"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="section" aria-label="Shop by category">
+      <div class="container">
+        <div class="section-header">
+          <div class="left"><h2>Shop by Category</h2><p>Find what you need</p></div>
+          <a href="/pages/products.html" class="view-all">View All &#x276F;</a>
+        </div>
+        <div class="categories-grid" id="categories-grid"></div>
+      </div>
+    </section>
+
+    <!-- Flash Deals -->
+    <section class="section" aria-label="Flash deals">
+      <div class="container">
+        <div class="deals-banner">
+          <div class="left">
+            <div class="deals-icon">&#x26A1;</div>
+            <div class="deals-text">
+              <h3>Flash Deals</h3>
+              <p>Limited time offers - grab them before they're gone!</p>
+            </div>
+          </div>
+          <div class="countdown">
+            <div class="countdown-item"><span class="num" id="deal-hours">11</span><span class="label">Hours</span></div>
+            <span class="countdown-sep">:</span>
+            <div class="countdown-item"><span class="num" id="deal-minutes">45</span><span class="label">Min</span></div>
+            <span class="countdown-sep">:</span>
+            <div class="countdown-item"><span class="num" id="deal-seconds">30</span><span class="label">Sec</span></div>
+          </div>
+        </div>
+        <div class="products-grid" id="flash-deals"></div>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="section products-section" aria-label="Featured products">
+      <div class="container">
+        <div class="section-header">
+          <div class="left"><h2>Featured Products</h2><p>Handpicked just for you</p></div>
+          <a href="/pages/products.html" class="view-all">View All &#x276F;</a>
+        </div>
+        <div class="products-grid" id="featured-products"></div>
+      </div>
+    </section>
+
+    <!-- Trending Products -->
+    <section class="section products-section" aria-label="Trending products">
+      <div class="container">
+        <div class="section-header">
+          <div class="left"><h2>Trending Now</h2><p>Most popular products right now</p></div>
+          <a href="/pages/products.html" class="view-all">View All &#x276F;</a>
+        </div>
+        <div class="products-grid" id="trending-products"></div>
+      </div>
+    </section>
+
+    <!-- New Arrivals -->
+    <section class="section products-section" aria-label="New arrivals">
+      <div class="container">
+        <div class="section-header">
+          <div class="left"><h2>New Arrivals</h2><p>Check out the latest products</p></div>
+          <a href="/pages/products.html" class="view-all">View All &#x276F;</a>
+        </div>
+        <div class="products-grid" id="new-arrivals"></div>
+      </div>
+    </section>
+
+    <!-- Popular Brands -->
+    <section class="section" aria-label="Popular brands">
+      <div class="container">
+        <div class="section-header">
+          <div class="left"><h2>Popular Brands</h2><p>Top brands you love</p></div>
+        </div>
+        <div class="brands-scroll" id="brands-scroll"></div>
+      </div>
+    </section>
+
+    <!-- Best Sellers -->
+    <section class="section products-section" aria-label="Best sellers">
+      <div class="container">
+        <div class="section-header">
+          <div class="left"><h2>Best Sellers</h2><p>Our most popular products</p></div>
+          <a href="/pages/products.html" class="view-all">View All &#x276F;</a>
+        </div>
+        <div class="products-grid" id="best-sellers"></div>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="section" aria-label="Customer reviews">
+      <div class="container">
+        <div class="section-header">
+          <div class="left"><h2>What Our Customers Say</h2><p>Real reviews from real customers</p></div>
+        </div>
+        <div class="reviews-grid" id="reviews-grid"></div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter" aria-label="Newsletter signup">
+      <div class="container">
+        <h2>Stay in the Loop</h2>
+        <p>Subscribe for exclusive offers, new arrivals, and insider deals</p>
+        <form class="newsletter-form" aria-label="Newsletter signup">
+          <input type="email" placeholder="Enter your email" required aria-label="Email">
+          <button type="submit" class="btn">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>VCart</h4>
+          <p>Shop Smart. Shop Better. India's premium online shopping destination for electronics, fashion, home goods, and more.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook">FB</a>
+            <a href="#" aria-label="Twitter">X</a>
+            <a href="#" aria-label="Instagram">IG</a>
+            <a href="#" aria-label="YouTube">YT</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/pages/products.html">All Products</a></li>
+            <li><a href="/pages/products.html">Best Sellers</a></li>
+            <li><a href="/pages/products.html">New Arrivals</a></li>
+            <li><a href="/pages/products.html">Flash Deals</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Customer Service</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Returns &amp; Exchanges</a></li>
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>My Account</h4>
+          <ul>
+            <li><a href="/pages/login.html">Sign In</a></li>
+            <li><a href="/pages/profile.html">My Orders</a></li>
+            <li><a href="/pages/cart.html">View Cart</a></li>
+            <li><a href="/pages/wishlist.html">Wishlist</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 VCart. All rights reserved.</span>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <button class="scroll-top" aria-label="Scroll to top">&#x2B06;</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const catList = document.getElementById('category-list');
+      if (catList) {
+        catList.innerHTML = Categories.map(c => `<span class="category-item">${c.icon} ${c.name}</span>`).join('');
+      }
+    });
+  </script>
+</body>
+</html>
