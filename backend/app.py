@@ -28,6 +28,7 @@ def create_app():
         "http://127.0.0.1:5000",
         "http://127.0.0.1:5500",
         "http://127.0.0.1:8000",
+        "https://vcart-ecommerce.vercel.app",
     ]
     if Config.FRONTEND_URL:
         origins.append(Config.FRONTEND_URL)
