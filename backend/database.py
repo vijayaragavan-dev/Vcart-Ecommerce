@@ -10,32 +10,26 @@ class Database:
     @classmethod
     def get_pool(cls):
         if cls._pool is None:
-            try:
-                cls._pool = mysql.connector.pooling.MySQLConnectionPool(
-                    pool_name=Config.get_dsn()["pool_name"],
-                    pool_size=Config.get_dsn()["pool_size"],
-                    pool_reset_session=Config.get_dsn()["pool_reset_session"],
-                    host=Config.DB_HOST,
-                    user=Config.DB_USER,
-                    password=Config.DB_PASSWORD,
-                    database=Config.DB_NAME,
-                    port=Config.DB_PORT,
-                    charset=Config.get_dsn()["charset"],
-                    use_pure=Config.get_dsn()["use_pure"],
-                    autocommit=Config.get_dsn()["autocommit"],
-                )
-            except mysql.connector.Error as e:
-                raise RuntimeError(f"Failed to create connection pool: {e}")
+            cls._pool = mysql.connector.pooling.MySQLConnectionPool(
+                pool_name=Config.get_dsn()["pool_name"],
+                pool_size=Config.get_dsn()["pool_size"],
+                pool_reset_session=Config.get_dsn()["pool_reset_session"],
+                host=Config.DB_HOST,
+                user=Config.DB_USER,
+                password=Config.DB_PASSWORD,
+                database=Config.DB_NAME,
+                port=Config.DB_PORT,
+                charset=Config.get_dsn()["charset"],
+                use_pure=Config.get_dsn()["use_pure"],
+                autocommit=Config.get_dsn()["autocommit"],
+            )
         return cls._pool
 
     @classmethod
     def get_connection(cls):
         pool = cls.get_pool()
-        try:
-            conn = pool.get_connection()
-            return conn
-        except mysql.connector.Error as e:
-            raise RuntimeError(f"Failed to get connection from pool: {e}")
+        conn = pool.get_connection()
+        return conn
 
     @classmethod
     def execute_query(cls, query, params=None, fetch_one=False, fetch_all=False):
@@ -80,10 +74,14 @@ class Database:
             )
             init_cursor = init_conn.cursor()
 
-            init_cursor.execute(
-                f"CREATE DATABASE IF NOT EXISTS `{Config.DB_NAME}` "
-                f"CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
-            )
+            try:
+                init_cursor.execute(
+                    f"CREATE DATABASE IF NOT EXISTS `{Config.DB_NAME}` "
+                    f"CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+                )
+            except mysql.connector.Error:
+                pass
+
             init_cursor.execute(f"USE `{Config.DB_NAME}`")
 
             init_cursor.execute("""
@@ -98,8 +96,8 @@ class Database:
 
             init_conn.commit()
 
-        except mysql.connector.Error as e:
-            raise RuntimeError(f"Database initialization failed: {e}")
+        except mysql.connector.Error:
+            pass
 
         finally:
             if init_cursor:

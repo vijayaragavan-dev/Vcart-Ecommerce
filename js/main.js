@@ -269,8 +269,25 @@ function initSearch() {
   });
 
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.navbar-search')) suggestions.classList.remove('show');
+    const searchContainer = document.querySelector('.navbar-search');
+    if (!e.target.closest('.navbar-search') && !e.target.closest('.search-toggle-btn')) {
+      suggestions.classList.remove('show');
+      if (searchContainer) searchContainer.classList.remove('mobile-visible');
+    }
   });
+
+  const searchToggle = document.querySelector('.search-toggle-btn');
+  if (searchToggle) {
+    searchToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const searchContainer = document.querySelector('.navbar-search');
+      if (!searchContainer) return;
+      searchContainer.classList.toggle('mobile-visible');
+      if (searchContainer.classList.contains('mobile-visible')) {
+        input.focus();
+      }
+    });
+  }
 
   function showSuggestions(q) {
     const lower = q.toLowerCase();

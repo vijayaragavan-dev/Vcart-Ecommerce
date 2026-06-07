@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask, jsonify, session
 from flask_cors import CORS
 from config import Config
@@ -46,8 +47,8 @@ def create_app():
     with app.app_context():
         try:
             Database.init_db()
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[VCart] Database initialization skipped: {e}", file=sys.stderr)
 
     return app
 

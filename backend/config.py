@@ -7,11 +7,11 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "change-this-secret-key-in-production")
 
-    DB_HOST = os.getenv("DB_HOST", "localhost")
-    DB_USER = os.getenv("DB_USER", "root")
-    DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-    DB_NAME = os.getenv("DB_NAME", "vcart_db")
-    DB_PORT = int(os.getenv("DB_PORT", 3306))
+    DB_HOST = os.getenv("DB_HOST") or os.getenv("MYSQL_HOST") or "localhost"
+    DB_USER = os.getenv("DB_USER") or os.getenv("MYSQL_USER") or "root"
+    DB_PASSWORD = os.getenv("DB_PASSWORD") or os.getenv("MYSQL_PASSWORD") or ""
+    DB_NAME = os.getenv("DB_NAME") or os.getenv("MYSQL_DATABASE") or "vcart_db"
+    DB_PORT = int(os.getenv("DB_PORT") or os.getenv("MYSQL_PORT") or 3306)
 
     FRONTEND_URL = os.getenv("FRONTEND_URL", "")
 

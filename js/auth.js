@@ -23,8 +23,10 @@ const Auth = {
         this._user = data.user;
         Utils.setToStorage("vcart_current_user", data.user);
       } else {
-        this._user = null;
-        localStorage.removeItem("vcart_current_user");
+        this._user = Utils.getFromStorage("vcart_current_user", null);
+        if (!this._user) {
+          localStorage.removeItem("vcart_current_user");
+        }
       }
     } catch {
       this._user = Utils.getFromStorage("vcart_current_user", null);
