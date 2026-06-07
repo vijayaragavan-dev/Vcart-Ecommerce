@@ -86,7 +86,7 @@ function initAnnouncement() {
 function initNavbar() {
   const navbar = document.querySelector('.navbar');
   if (!navbar) return;
-  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.pageYOffset > 60));
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.pageYOffset > 60), { passive: true });
 }
 
 /* Sidebar */
@@ -213,11 +213,15 @@ function initNewsletter() {
 function initDarkMode() {
   const t = document.querySelector('.theme-toggle');
   if (!t) return;
-  if (localStorage.getItem('vcart_theme') === 'dark') document.documentElement.setAttribute('data-theme','dark');
+  if (localStorage.getItem('vcart_theme') === 'dark') {
+    document.documentElement.classList.add('dark-theme');
+  }
   t.addEventListener('click', () => {
-    const d = document.documentElement.getAttribute('data-theme') === 'dark';
-    d ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme','dark');
-    localStorage.setItem('vcart_theme', d ? 'light' : 'dark');
+    const now = document.documentElement.classList.contains('dark-theme');
+    document.documentElement.classList.toggle('dark-theme', !now);
+    requestAnimationFrame(() => {
+      localStorage.setItem('vcart_theme', now ? 'light' : 'dark');
+    });
   });
 }
 
@@ -225,7 +229,7 @@ function initDarkMode() {
 function initScrollTop() {
   const b = document.querySelector('.scroll-top');
   if (!b) return;
-  window.addEventListener('scroll', () => b.classList.toggle('visible', window.pageYOffset > 400));
+  window.addEventListener('scroll', () => b.classList.toggle('visible', window.pageYOffset > 400), { passive: true });
   b.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
@@ -543,18 +547,5 @@ document.addEventListener('click', (e) => {
     r.style.top = (e.clientY - rect.top - s/2) + 'px';
     btn.appendChild(r);
     setTimeout(() => r.remove(), 600);
-  }
-
-  const atc = e.target.closest('.add-to-cart-btn');
-  if (atc) {
-    const pid = parseInt(atc.dataset.id);
-    const prod = ProductsDB.find(p => p.id === pid);
-    if (prod) Cart.addItem(prod);
-  }
-
-  const wl = e.target.closest('.card-wishlist');
-  if (wl) {
-    wl.classList.toggle('active');
-    Utils.showToast(wl.classList.contains('active') ? 'Added to wishlist' : 'Removed from wishlist');
   }
 });
