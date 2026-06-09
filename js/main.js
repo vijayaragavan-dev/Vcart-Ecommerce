@@ -1,7 +1,6 @@
-// VCart Main Application
-document.addEventListener('DOMContentLoaded', async () => {
-  await Auth.init();
+document.addEventListener('DOMContentLoaded', () => {
   Cart.init();
+  Auth.init();
   initAnnouncement();
   initNavbar();
   initSidebar();
@@ -18,11 +17,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   initReviews();
   initNewsletter();
   initDarkMode();
+  initWishlist();
   initScrollTop();
   initAnimations();
-  initPageReveal();
   initSearch();
-  handleUrlCategoryFilter();
   initProductPage();
   initProductDetail();
   initCheckout();
@@ -30,16 +28,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   initOrderSuccess();
 });
 
-/* Product Card */
 function renderCard(p) {
   const stars = '\u2605'.repeat(Math.floor(p.rating)) + (p.rating % 1 >= 0.5 ? '\u00BD' : '') + '\u2606'.repeat(5 - Math.round(p.rating));
   const imgUrl = Utils.getProductImageUrl(p, 300, 300);
   const grad = Utils.getCategoryFallbackGradient(p.category);
+  const wishlisted = Wishlist.has(p.id);
   return `<div class="product-card fade-up">
-    <div class="card-image">
-      <img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div class="card-img-fallback" style="display:none;width:100%;height:100%;background:${grad};position:absolute;top:0;left:0;"></div>
-      <button class="card-wishlist" data-id="${p.id}" aria-label="Wishlist">&#x2661;</button>
+    <div class="card-image" style="background:${grad}">
+      <img src="${imgUrl}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">
+      <button class="card-wishlist ${wishlisted?'active':''}" data-id="${p.id}" aria-label="Wishlist">${wishlisted?'&#x2665;':'&#x2661;'}</button>
       ${p.badge ? `<span class="card-discount">${p.badge}</span>` : ''}
     </div>
     <div class="card-body">
@@ -67,6 +64,50 @@ function renderSection(id, products) {
   el.innerHTML = products.map(renderCard).join('');
 }
 
+/* Wishlist */
+const Wishlist = {
+  getItems() {
+    return Utils.getFromStorage('vcart_wishlist', []);
+  },
+  saveItems(items) {
+    Utils.setToStorage('vcart_wishlist', items);
+  },
+  has(productId) {
+    return this.getItems().some(item => item.id === productId);
+  },
+  toggle(product) {
+    const items = this.getItems();
+    const idx = items.findIndex(item => item.id === product.id);
+    if (idx > -1) {
+      items.splice(idx, 1);
+      this.saveItems(items);
+      return false;
+    } else {
+      items.push(product);
+      this.saveItems(items);
+      return true;
+    }
+  },
+  remove(productId) {
+    this.saveItems(this.getItems().filter(item => item.id !== productId));
+  }
+};
+
+function initWishlist() {
+  const container = document.getElementById('wishlist-container');
+  if (!container) return;
+  const items = Wishlist.getItems();
+  if (items.length === 0) {
+    container.innerHTML = `<div class="cart-empty"><div class="empty-icon">&#x2661;</div><h2>Your wishlist is empty</h2><p>Save your favorite items here and shop them later.</p><a href="/pages/products.html" class="btn btn-primary">Browse Products</a></div>`;
+    return;
+  }
+  const grid = document.createElement('div');
+  grid.className = 'products-grid';
+  grid.innerHTML = items.map(renderCard).join('');
+  container.innerHTML = '';
+  container.appendChild(grid);
+}
+
 /* Announcement */
 function initAnnouncement() {
   const closeBtn = document.querySelector('.close-announce');
@@ -86,7 +127,16 @@ function initAnnouncement() {
 function initNavbar() {
   const navbar = document.querySelector('.navbar');
   if (!navbar) return;
-  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.pageYOffset > 60), { passive: true });
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        navbar.classList.toggle('scrolled', window.pageYOffset > 60);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
 }
 
 /* Sidebar */
@@ -126,7 +176,6 @@ function initHero() {
   if (next) next.addEventListener('click', () => { adv(); reset(); });
   const reset = () => { clearInterval(interval); interval = setInterval(adv, 5000); };
   interval = setInterval(adv, 5000);
-  go(0);
 }
 
 /* Categories on Home Page */
@@ -172,14 +221,16 @@ function initDealsCountdown() {
   const mEl = document.getElementById('deal-minutes');
   const sEl = document.getElementById('deal-seconds');
   if (!hEl) return;
-  setInterval(() => {
+  const update = () => {
     if (sec <= 0) sec = 24 * 3600;
     const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
     hEl.textContent = String(h).padStart(2,'0');
     mEl.textContent = String(m).padStart(2,'0');
     sEl.textContent = String(s).padStart(2,'0');
     sec--;
-  }, 1000);
+  };
+  update();
+  setInterval(update, 1000);
 }
 
 /* Reviews */
@@ -191,7 +242,7 @@ function initReviews() {
       <div class="review-stars">${'\u2605'.repeat(r.rating)}${'\u2606'.repeat(5-r.rating)}</div>
       <div class="review-text">&ldquo;${r.text}&rdquo;</div>
       <div class="review-header" style="margin-bottom:0;margin-top:14px;">
-        <img class="review-avatar" src="https://picsum.photos/seed/${r.avatar}/80/80" alt="${r.name}" loading="lazy">
+        <img class="review-avatar" src="https://picsum.photos/seed/${r.avatar}/80/80" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
         <div class="review-info"><h4>${r.name}</h4><span>Verified Buyer</span></div>
       </div>
     </div>`
@@ -213,15 +264,10 @@ function initNewsletter() {
 function initDarkMode() {
   const t = document.querySelector('.theme-toggle');
   if (!t) return;
-  if (localStorage.getItem('vcart_theme') === 'dark') {
-    document.documentElement.classList.add('dark-theme');
-  }
   t.addEventListener('click', () => {
     const now = document.documentElement.classList.contains('dark-theme');
     document.documentElement.classList.toggle('dark-theme', !now);
-    requestAnimationFrame(() => {
-      localStorage.setItem('vcart_theme', now ? 'light' : 'dark');
-    });
+    localStorage.setItem('vcart_theme', now ? 'light' : 'dark');
   });
 }
 
@@ -229,21 +275,25 @@ function initDarkMode() {
 function initScrollTop() {
   const b = document.querySelector('.scroll-top');
   if (!b) return;
-  window.addEventListener('scroll', () => b.classList.toggle('visible', window.pageYOffset > 400), { passive: true });
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        b.classList.toggle('visible', window.pageYOffset > 400);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
   b.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
 /* Animations */
 function initAnimations() {
   const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.05 });
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-}
-
-/* Page Reveal */
-function initPageReveal() {
-  document.body.classList.add('page-reveal');
 }
 
 /* Search */
@@ -331,17 +381,15 @@ function handleUrlCategoryFilter() {
     const input = document.querySelector('.navbar-search input');
     if (input) {
       input.value = search;
-      setTimeout(() => {
-        const results = ProductsDB.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
-        if (results.length > 0) {
-          const container = document.getElementById('all-products');
-          if (container) {
-            container.innerHTML = results.map(renderCard).join('');
-            const count = document.getElementById('result-count');
-            if (count) count.textContent = 'Showing ' + results.length + ' results for "' + search + '"';
-          }
+      const results = ProductsDB.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+      if (results.length > 0) {
+        const container = document.getElementById('all-products');
+        if (container) {
+          container.innerHTML = results.map(renderCard).join('');
+          const count = document.getElementById('result-count');
+          if (count) count.textContent = 'Showing ' + results.length + ' results for "' + search + '"';
         }
-      }, 100);
+      }
     }
   }
 }
@@ -383,7 +431,6 @@ function initProductPage() {
   const pr = document.getElementById('price-range');
   if (pr) pr.addEventListener('input', Utils.debounce(apply, 200));
 
-  // Check for URL category param and apply it
   const params = new URLSearchParams(window.location.search);
   const urlCat = params.get('category');
   const urlSearch = params.get('search');
@@ -422,17 +469,18 @@ function initProductDetail() {
 
   const stars = '\u2605'.repeat(Math.floor(p.rating)) + (p.rating % 1 >= 0.5 ? '\u00BD' : '') + '\u2606'.repeat(5 - Math.round(p.rating));
   const imgUrl = Utils.getProductImageUrl(p, 600, 600);
+  const grad = Utils.getCategoryFallbackGradient(p.category);
 
   c.innerHTML = `<div class="product-detail-layout">
     <div class="product-gallery">
-      <div class="main-image" id="main-img">
-        <img src="${imgUrl}" alt="${p.name}" id="main-img-el">
+      <div class="main-image" id="main-img" style="background:${grad}">
+        <img src="${imgUrl}" alt="${p.name}" id="main-img-el" onerror="this.style.display='none'">
       </div>
       <div class="image-thumbnails">
-        <div class="thumb active"><img src="${imgUrl}" alt=""></div>
-        <div class="thumb"><img src="${Utils.getProductImageUrl({...p, id: p.id+100}, 600, 600)}" alt=""></div>
-        <div class="thumb"><img src="${Utils.getProductImageUrl({...p, id: p.id+200}, 600, 600)}" alt=""></div>
-        <div class="thumb"><img src="${Utils.getProductImageUrl({...p, id: p.id+300}, 600, 600)}" alt=""></div>
+        <div class="thumb active"><img src="${imgUrl}" alt="" onerror="this.style.display='none'"></div>
+        <div class="thumb"><img src="${Utils.getProductImageUrl({...p, id: p.id+100}, 600, 600)}" alt="" onerror="this.style.display='none'"></div>
+        <div class="thumb"><img src="${Utils.getProductImageUrl({...p, id: p.id+200}, 600, 600)}" alt="" onerror="this.style.display='none'"></div>
+        <div class="thumb"><img src="${Utils.getProductImageUrl({...p, id: p.id+300}, 600, 600)}" alt="" onerror="this.style.display='none'"></div>
       </div>
     </div>
     <div class="product-info">
@@ -446,7 +494,7 @@ function initProductDetail() {
       <div class="product-description"><p>${p.desc || ''}</p></div>
       ${p.specs ? `<div class="product-specs"><h3>Specifications</h3>${Object.entries(p.specs).map(([k,v]) => `<div class="spec-row"><span class="spec-label">${k}</span><span class="spec-value">${v}</span></div>`).join('')}</div>` : ''}
       <div class="qty-selector"><label>Qty:</label><div class="qty-controls"><button id="qty-m">&#x2212;</button><span id="qty-v">1</span><button id="qty-p">+</button></div></div>
-      <div class="product-actions"><button class="btn btn-primary" id="dtl-add-cart">Add to Cart</button><button class="btn btn-accent" id="dtl-buy">Buy Now</button></div>
+      <div class="product-actions"><button class="btn btn-primary" id="dtl-add-cart">Add to Cart</button><button class="btn btn-accent" id="dtl-buy">Buy Now</button><button class="btn btn-secondary" id="dtl-wishlist">${Wishlist.has(p.id)?'&#x2665; Wishlisted':'&#x2661; Wishlist'}</button></div>
     </div>
   </div>
   <div class="section"><div class="section-header"><div class="left"><h2>Related Products</h2></div></div><div class="products-grid" id="related-products"></div></div>`;
@@ -456,6 +504,11 @@ function initProductDetail() {
   document.getElementById('qty-p').addEventListener('click', () => { qty++; document.getElementById('qty-v').textContent = qty; });
   document.getElementById('dtl-add-cart').addEventListener('click', () => { for (let i=0; i<qty; i++) Cart.addItem(p); });
   document.getElementById('dtl-buy').addEventListener('click', () => { for (let i=0; i<qty; i++) Cart.addItem(p); window.location.href = '/pages/checkout.html'; });
+  document.getElementById('dtl-wishlist').addEventListener('click', function() {
+    const added = Wishlist.toggle(p);
+    this.innerHTML = added ? '&#x2665; Wishlisted' : '&#x2661; Wishlist';
+    Utils.showToast(added ? 'Added to wishlist' : 'Removed from wishlist');
+  });
 
   document.querySelectorAll('.image-thumbnails .thumb').forEach(t => t.addEventListener('click', () => {
     document.querySelectorAll('.image-thumbnails .thumb').forEach(x => x.classList.remove('active'));
@@ -474,8 +527,9 @@ function initProductDetail() {
   });
   main.addEventListener('mouseleave', () => { img.style.transform = 'scale(1)'; });
 
-  const related = ProductsDB.filter(x => x.category === p.category && x.id !== p.id).slice(0, 4);
-  document.getElementById('related-products').innerHTML = (related.length ? related : ProductsDB.filter(x => x.id !== p.id).slice(0, 4)).map(renderCard).join('');
+  const categoryProducts = ProductsDB.filter(x => x.category === p.category && x.id !== p.id).slice(0, 4);
+  const related = categoryProducts.length ? categoryProducts : ProductsDB.filter(x => x.id !== p.id).slice(0, 4);
+  document.getElementById('related-products').innerHTML = related.map(renderCard).join('');
 }
 
 /* ============================
@@ -487,7 +541,7 @@ function initCheckout() {
   const items = Cart.getItems();
   if (!items.length) { c.innerHTML = '<div class="empty-state"><h3>Your cart is empty</h3><a href="/pages/products.html" class="btn btn-primary">Shop Now</a></div>'; return; }
   c.innerHTML = items.map(i =>
-    `<div class="review-item"><img src="${Utils.getProductImageUrl(i, 100, 100)}" alt="${i.name}" loading="lazy"><div class="item-details"><h4>${i.name}</h4><p>Qty: ${i.quantity}</p><p>&#x20B9;${(i.price*i.quantity).toLocaleString('en-IN')}</p></div></div>`
+    `<div class="review-item"><img src="${Utils.getProductImageUrl(i, 100, 100)}" alt="${i.name}" loading="lazy" onerror="this.style.display='none'"><div class="item-details"><h4>${i.name}</h4><p>Qty: ${i.quantity}</p><p>&#x20B9;${(i.price*i.quantity).toLocaleString('en-IN')}</p></div></div>`
   ).join('');
   const sub = Cart.getTotal(), ship = sub > 500 ? 0 : 49;
   ['checkout-subtotal', 'checkout-shipping', 'checkout-total'].forEach(id => {
@@ -533,7 +587,7 @@ function initOrderSuccess() {
 }
 
 /* ============================
-   BUTTON RIPPLE + CART/WISHLIST EVENTS
+   GLOBAL EVENT DELEGATION
    ============================ */
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.btn');
@@ -547,5 +601,28 @@ document.addEventListener('click', (e) => {
     r.style.top = (e.clientY - rect.top - s/2) + 'px';
     btn.appendChild(r);
     setTimeout(() => r.remove(), 600);
+  }
+
+  const cartBtn = e.target.closest('.add-to-cart-btn');
+  if (cartBtn) {
+    const productId = parseInt(cartBtn.dataset.id);
+    const product = ProductsDB.find(p => p.id === productId);
+    if (product) {
+      Cart.addItem(product);
+      cartBtn.classList.add('added');
+      setTimeout(() => cartBtn.classList.remove('added'), 1000);
+    }
+  }
+
+  const wishBtn = e.target.closest('.card-wishlist');
+  if (wishBtn) {
+    const productId = parseInt(wishBtn.dataset.id);
+    const product = ProductsDB.find(p => p.id === productId);
+    if (product) {
+      const added = Wishlist.toggle(product);
+      wishBtn.classList.toggle('active', added);
+      wishBtn.innerHTML = added ? '&#x2665;' : '&#x2661;';
+      Utils.showToast(added ? 'Added to wishlist' : 'Removed from wishlist');
+    }
   }
 });

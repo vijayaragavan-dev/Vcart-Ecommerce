@@ -1,9 +1,6 @@
-// VCart Cart Module
-
 const Cart = {
   init() {
     this.updateBadge();
-    this.bindEvents();
     this.renderCartPage();
   },
 
@@ -51,9 +48,7 @@ const Cart = {
   },
 
   getCount() {
-    const items = this.getItems();
-    const totalQty = items.reduce((sum, item) => sum + item.quantity, 0);
-    return totalQty;
+    return this.getItems().reduce((sum, item) => sum + item.quantity, 0);
   },
 
   getItemCount() {
@@ -97,10 +92,12 @@ const Cart = {
     const summary = document.querySelector('.cart-summary');
     if (summary) summary.style.display = 'block';
 
-    container.innerHTML = items.map(item => `
-      <div class="cart-item" data-id="${item.id}">
-        <div class="cart-item-image">
-          <img src="${Utils.getProductImage(item.seed || 'product' + item.id)}" alt="${item.name}" loading="lazy">
+    container.innerHTML = items.map(item => {
+      const imgUrl = Utils.getProductImageUrl(item, 100, 100);
+      const grad = Utils.getCategoryFallbackGradient(item.category);
+      return `<div class="cart-item" data-id="${item.id}">
+        <div class="cart-item-image" style="background:${grad}">
+          <img src="${imgUrl}" alt="${item.name}" loading="lazy" onerror="this.style.display='none'">
         </div>
         <div class="cart-item-info">
           <h3>${item.name}</h3>
@@ -115,10 +112,9 @@ const Cart = {
           </div>
           <button class="remove-btn" data-id="${item.id}">Remove</button>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
 
-    // Update summary
     const subtotal = this.getTotal();
     const shipping = subtotal > 500 ? 0 : 49;
     const total = subtotal + shipping;
@@ -132,44 +128,15 @@ const Cart = {
 
   bindCartEvents() {
     document.querySelectorAll('.qty-minus').forEach(btn => {
-      btn.addEventListener('click', () => this.updateQuantity(parseInt(btn.dataset.id), -1));
+      btn.onclick = () => this.updateQuantity(parseInt(btn.dataset.id), -1);
     });
 
     document.querySelectorAll('.qty-plus').forEach(btn => {
-      btn.addEventListener('click', () => this.updateQuantity(parseInt(btn.dataset.id), 1));
+      btn.onclick = () => this.updateQuantity(parseInt(btn.dataset.id), 1);
     });
 
     document.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', () => this.removeItem(parseInt(btn.dataset.id)));
+      btn.onclick = () => this.removeItem(parseInt(btn.dataset.id));
     });
   },
-
-  bindEvents() {
-    // Add to cart buttons
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.add-to-cart-btn');
-      if (btn) {
-        const productId = parseInt(btn.dataset.id);
-        const product = ProductsDB.find(p => p.id === productId);
-        if (product) {
-          this.addItem(product);
-          // Ripple effect
-          btn.classList.add('added');
-          setTimeout(() => btn.classList.remove('added'), 1000);
-        }
-      }
-
-      // Wishlist toggle
-      const wishBtn = e.target.closest('.card-wishlist');
-      if (wishBtn) {
-        wishBtn.classList.toggle('active');
-        const productId = parseInt(wishBtn.dataset.id);
-        if (wishBtn.classList.contains('active')) {
-          Utils.showToast('Added to wishlist');
-        } else {
-          Utils.showToast('Removed from wishlist');
-        }
-      }
-    });
-  }
 };

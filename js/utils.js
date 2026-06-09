@@ -40,6 +40,12 @@ const Utils = {
     return `https://loremflickr.com/${w}/${h}/${keyword}?lock=${product.id}`;
   },
 
+  getProductImage(seed, w, h) {
+    w = w || 300;
+    h = h || 300;
+    return `https://picsum.photos/seed/${seed}/${w}/${h}`;
+  },
+
   getAvatarImage(seed, w, h) {
     w = w || 80;
     h = h || 80;

@@ -1,5 +1,3 @@
-// VCart Authentication Module - Flask Backend
-
 const API_BASE = Config.API_BASE;
 
 const Auth = {
@@ -7,17 +5,32 @@ const Auth = {
 
   async init() {
     this._user = Utils.getFromStorage("vcart_current_user", null);
-    await this.checkSession();
-    this._sessionChecked = true;
+    this._sessionPromise = this.checkSession();
+    this._sessionPromise.then(() => {
+      this._sessionChecked = true;
+      this.updateUI();
+    });
     this.updateUI();
     this.bindEvents();
   },
 
   async checkSession() {
+    const cached = Utils.getFromStorage("vcart_session_cache", null);
+    if (cached && Date.now() - cached.time < 300000) {
+      if (cached.user) {
+        this._user = cached.user;
+        Utils.setToStorage("vcart_current_user", cached.user);
+      }
+      return this._user;
+    }
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
     try {
       const res = await fetch(API_BASE + "/api/auth/session", {
         credentials: "include",
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
       const data = await res.json();
       if (data.authenticated && data.user) {
         this._user = data.user;
@@ -28,7 +41,9 @@ const Auth = {
           localStorage.removeItem("vcart_current_user");
         }
       }
+      Utils.setToStorage("vcart_session_cache", { user: this._user, time: Date.now() });
     } catch {
+      clearTimeout(timeout);
       this._user = Utils.getFromStorage("vcart_current_user", null);
     }
     return this._user;
@@ -54,6 +69,7 @@ const Auth = {
       if (data.success) {
         this._user = data.user;
         Utils.setToStorage("vcart_current_user", data.user);
+        Utils.setToStorage("vcart_session_cache", { user: data.user, time: Date.now() });
         this.updateUI();
         return { success: true, message: data.message };
       }
@@ -79,6 +95,7 @@ const Auth = {
       if (data.success) {
         this._user = data.user;
         Utils.setToStorage("vcart_current_user", data.user);
+        Utils.setToStorage("vcart_session_cache", { user: data.user, time: Date.now() });
         this.updateUI();
         return { success: true, message: data.message };
       }
@@ -98,6 +115,7 @@ const Auth = {
     }
     this._user = null;
     localStorage.removeItem("vcart_current_user");
+    localStorage.removeItem("vcart_session_cache");
     this.updateUI();
     Utils.showToast("Logged out successfully");
     setTimeout(() => window.location.reload(), 500);

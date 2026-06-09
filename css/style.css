@@ -662,6 +662,7 @@ input, select, textarea {
   transition: opacity 0.6s ease;
   background-size: cover;
   background-position: center;
+  background-color: #1E293B;
 }
 
 .hero-slide.active { opacity: 1; }
@@ -2383,9 +2384,7 @@ input, select, textarea {
    ANIMATIONS
    ============================ */
 .page-reveal {
-  opacity: 0;
-  transform: translateY(12px);
-  animation: page-reveal 0.45s ease forwards;
+  opacity: 1;
 }
 
 @keyframes page-reveal {
